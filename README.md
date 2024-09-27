@@ -24,22 +24,35 @@ XAMPP (for PHP, MySQL, and Apache server)<br />
 
 It is required to be installed on system to run this project.<br />
 
+
 # Running
 
-XAMPP can be download using the following link
+If you haven't already, download and install XAMPP from here 
 ```
 https://www.apachefriends.org/download.html
 ```
-After setting up and completing the installation steps, follow these instructions to run the application:
+- Once it downloaded Start the application.
+- Start Apache and MySQL from the XAMPP control panel.
 
-Start Apache and MySQL in XAMPP:
+**Extract the Project Files**:
 
-Open the XAMPP control panel.
-Click Start for both Apache and MySQL.
+- Download and extract the project files from the archive.
 
-And then we need to run the create_database.phpy file. 
+**Copy the Main Project Folder**:
 
-Then you can register the account 
+- Copy the extracted project folder.\
+
+**Paste the Project Folder**:
+
+- Navigate to `C:/xampp/htdocs/` and paste the project folder into the `htdocs` directory.
+
+**Open Your Browser**:
+
+ - Launch your preferred web browser (e.g., Chrome, Firefox).
+
+- Then we need to run the create_database.phpy file File.
+
+- Then you can register the account 
 
 # usage
 
@@ -50,18 +63,15 @@ Once the EasyMeds application is running, follow these steps to interact with it
     Existing users can log in with their credentials..<br />
 2. Browse Medications:
     After logging in, users can search or browse for available medications.
-    View details about each medication, including dosage, price, and availability.<br />
-3. Manage Prescriptions:
-    Users can upload their prescriptions, which will be stored and verified by administrators.
-    View, update, or delete prescriptions as necessary.<br />
-4. Place Orders:
+    View details about each medication, including price, availability and Expiry.<br />
+3. Place Orders:
     Add medications to your cart and proceed to checkout to place an order.
     Track the status of your order in the Orders section.<br />
-5. Admin Panel (for Admin Users):
+4. Admin Panel (for Admin Users):
     Admins can log in to access the Admin Panel, where they can:
     Manage users (view, update, delete).
     Manage medications and inventory.
     View and process orders placed by users.<br />
-6. Logout:
+5. Logout:
     Once done, users can securely log out using the logout button located in the navigation bar.<br />
 
