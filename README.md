@@ -42,6 +42,18 @@ https://www.apachefriends.org/download.html
 
 - Then you can register the account 
 
+# Features
+
+- User Authentication: Secure user registration and login functionality.
+
+- Medication Search: Users can browse or search for medications based on their needs.
+
+- Prescription Management: Upload, view, and manage prescriptions.
+
+- Order Medications: Easily place orders for medications and track order status.
+
+- Admin Panel: Allows administrators to manage medication inventory and users.
+
 # usage
 
 Once the EasyMeds application is running, follow these steps to interact with it:
@@ -63,14 +75,3 @@ Once the EasyMeds application is running, follow these steps to interact with it
 5. Logout:
     Once done, users can securely log out using the logout button located in the navigation bar.<br />
 
-# Features
-
-- User Authentication: Secure user registration and login functionality.
-
-- Medication Search: Users can browse or search for medications based on their needs.
-
-- Prescription Management: Upload, view, and manage prescriptions.
-
-- Order Medications: Easily place orders for medications and track order status.
-
-- Admin Panel: Allows administrators to manage medication inventory and users.
