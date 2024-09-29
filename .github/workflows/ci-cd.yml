@@ -1,0 +1,83 @@
+name: EasyMeds CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    services:
+      mysql:
+        image: mysql:5.7
+        options: --health-cmd='mysqladmin ping --silent' --health-interval=5s --health-timeout=5s --health-retries=3
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: easymeds
+        ports:
+          - 3306:3306
+    
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up PHP with required extensions
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.0
+          extensions: mbstring, mysqli, pdo_mysql, intl
+
+      # Step 3: Install Composer Dependencies
+      - name: Install dependencies
+        run: composer install
+      
+      # Step 4: Configure the database (Run create_database.php)
+      - name: Run Database Setup
+        env:
+          DB_HOST: 127.0.0.1
+          DB_USERNAME: root
+          DB_PASSWORD: root
+          DB_NAME: easymeds
+        run: |
+          mysql -u root --password=root -h 127.0.0.1 -e "CREATE DATABASE IF NOT EXISTS easymeds;"
+          php create_database.php  # Adjust according to your DB setup file
+      
+      # Step 5: Run any existing tests (if available)
+      - name: Run tests
+        run: phpunit tests  # Assuming you have PHP tests in the 'tests' directory
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.0
+          extensions: mbstring, mysqli, pdo_mysql, intl
+      
+      - name: Install dependencies
+        run: composer install
+
+      # Add your deployment logic here
+      # Example for FTP/SFTP deployment
+      - name: Deploy via SFTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.2
+        with:
+          server: ${{ secrets.FTP_SERVER }}  # FTP server address
+          username: ${{ secrets.FTP_USERNAME }}  # FTP login username
+          password: ${{ secrets.FTP_PASSWORD }}  # FTP password
+          local-dir: ./  # Your local directory to deploy
+          server-dir: /var/www/html/easymeds  # Target directory on the server
