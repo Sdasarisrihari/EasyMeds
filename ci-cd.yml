@@ -3,28 +3,38 @@ name: CI/CD to Heroku
 on:
   push:
     branches:
-      - main  # You can change this to any branch you want to deploy
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Checkout the code from GitHub
+    # Step 1: Check out the code from your repository
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Step 2: Set up PHP
+    # Step 2: Set up PHP environment
     - name: Set up PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.0'
+        extensions: mbstring, mysqli, pdo_mysql
 
-    # Step 3: Install dependencies via Composer
+    # Step 3: Install Composer dependencies
     - name: Install dependencies
       run: composer install
 
-    # Step 4: Deploy to Heroku using the API key and app name
+    # Step 4: Run Database Setup (if necessary)
+    - name: Run Database Setup
+      env:
+        HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+      run: heroku run php create_database.php --app ${{ secrets.HEROKU_APP_NAME }}
+
+    # Step 5: Deploy to Heroku using Heroku API
     - name: Deploy to Heroku
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
