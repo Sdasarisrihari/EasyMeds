@@ -1,38 +1,58 @@
-name: CI/CD to Heroku
+name: CI/CD Pipeline for EasyMeds
 
 on:
   push:
     branches:
-      - main  # This can be any branch you want to trigger the workflow
+      - main
   pull_request:
     branches:
       - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-
+    
     steps:
-    # Step 1: Check out the code from your repository
-    - name: Checkout code
-      uses: actions/checkout@v3  # Automatically updated to Node.js 20 in 2024
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    # Step 2: Set up PHP environment
-    - name: Set up PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.0'
-        extensions: mbstring, mysqli, pdo_mysql
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
 
-    # Step 3: Install Composer dependencies
-    - name: Install dependencies
-      run: composer install
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-    # Step 4: Deploy to Heroku using Heroku API
-    - name: Deploy to Heroku
-      env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
-      run: |
-        git remote add heroku https://git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git
-        git push heroku main -f
+      - name: Build Docker Image
+        run: docker build -t your-dockerhub-username/easymeds:latest .
+
+      - name: Push Docker image to Docker Hub
+        run: docker push your-dockerhub-username/easymeds:latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Pull the Docker image
+        run: docker pull your-dockerhub-username/easymeds:latest
+
+      - name: Run MySQL Docker Container
+        run: |
+          docker run --name easymeds-mysql \
+                     -e MYSQL_DATABASE=easymeds \
+                     -e MYSQL_ROOT_PASSWORD=root \
+                     -p 3306:3306 \
+                     -d mysql:8.0
+
+      - name: Run EasyMeds Docker Container
+        run: |
+          docker run --name easymeds \
+                     --link easymeds-mysql:mysql \
+                     -e DATABASE_URL=mysql://root:root@mysql/easymeds \
+                     -p 8080:80 \
+                     -d your-dockerhub-username/easymeds:latest
+
+      - name: Verify MySQL Container
+        run: docker ps | grep mysql
