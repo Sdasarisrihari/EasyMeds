@@ -1,0 +1,15 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html  # Mount the current directory
+      - ./httpd.conf:/etc/apache2/conf-enabled/httpd.conf  # Mount your custom config
+    environment:
+      DB_HOST: db
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      DB_NAME: easymeds
