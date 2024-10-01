@@ -28,10 +28,10 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Build Docker Image
-        run: docker build -t your-dockerhub-username/easymeds:latest .
+        run: docker build -t sdasari7/easymeds:latest .
 
       - name: Push Docker image to Docker Hub
-        run: docker push your-dockerhub-username/easymeds:latest
+        run: docker push sdasari7/easymeds:latest
 
   deploy:
     needs: build
@@ -41,7 +41,7 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Pull the Docker image
-        run: docker pull your-dockerhub-username/easymeds:latest
+        run: docker pull sdasari7/easymeds:latest
 
       - name: Run MySQL Docker Container
         run: |
@@ -51,22 +51,13 @@ jobs:
                      -p 3306:3306 \
                      -d mysql:8.0
 
-      # Add a step to wait for MySQL to initialize
-      - name: Wait for MySQL to Initialize
-        run: sleep 30
-
-      # Check MySQL logs in case of any errors
-      - name: Check MySQL Container Logs
-        run: docker logs easymeds-mysql
-
       - name: Run EasyMeds Docker Container
         run: |
           docker run --name easymeds \
                      --link easymeds-mysql:mysql \
                      -e DATABASE_URL=mysql://root:root@mysql/easymeds \
                      -p 8080:80 \
-                     -d your-dockerhub-username/easymeds:latest
+                     -d sdasari7/easymeds:latest
 
-      # Verify if MySQL is running and linked correctly
       - name: Verify MySQL Container
         run: docker ps | grep mysql
