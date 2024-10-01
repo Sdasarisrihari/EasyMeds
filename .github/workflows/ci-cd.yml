@@ -51,6 +51,14 @@ jobs:
                      -p 3306:3306 \
                      -d mysql:8.0
 
+      # Add a step to wait for MySQL to initialize
+      - name: Wait for MySQL to Initialize
+        run: sleep 30
+
+      # Check MySQL logs in case of any errors
+      - name: Check MySQL Container Logs
+        run: docker logs easymeds-mysql
+
       - name: Run EasyMeds Docker Container
         run: |
           docker run --name easymeds \
@@ -59,5 +67,6 @@ jobs:
                      -p 8080:80 \
                      -d your-dockerhub-username/easymeds:latest
 
+      # Verify if MySQL is running and linked correctly
       - name: Verify MySQL Container
         run: docker ps | grep mysql
