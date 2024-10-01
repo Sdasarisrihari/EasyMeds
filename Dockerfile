@@ -12,3 +12,4 @@ RUN chown -R www-data:www-data /var/www/html
 
 # Expose port 80 to allow the container to serve the web app
 EXPOSE 80
+
