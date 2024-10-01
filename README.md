@@ -1,5 +1,5 @@
 # EasyMeds
-
+ 
 # Description 
 
 EasyMeds is a PHP-based web application designed to simplify medication management and ordering processes. The application enables users to search for medications, manage prescriptions, and place orders online with ease. Admin users can manage inventory and view user activities, making the platform a comprehensive solution for both users and administrators.<br />
